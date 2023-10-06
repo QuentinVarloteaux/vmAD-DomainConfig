@@ -6,6 +6,12 @@ configuration CreateADPDC
         [String]$DomainName,
 
         [Parameter(Mandatory)]
+        [String]$NomClient,
+
+        [Parameter(Mandatory = $true)]
+        [System.String]$Path,
+
+        [Parameter(Mandatory)]
         [System.Management.Automation.PSCredential]$Admincreds,
 
         [Int]$RetryCount = 20,
@@ -104,6 +110,25 @@ configuration CreateADPDC
             SysvolPath                    = "C:\Windows\SYSVOL"
             DependsOn                     = @("[xDisk]ADDataDisk", "[WindowsFeature]ADDSInstall")
         } 
+
+        xADOrganizationalUnit MainOU
+        {
+            Name                            = $NomClient
+            Path                            = $Path
+            ProtectedFromAccidentalDeletion = $true
+            Ensure                          = 'Present'
+        }
+
+        xADDomainDefaultPasswordPolicy DefaultPasswordPolicy
+        {
+            DomainName               = $DomainName
+            ComplexityEnabled        = $true
+            MinPasswordAge           = 1
+            MaxPasswordAge           = 365
+            MinPasswordLength        = 8
+            PasswordHistoryCount     = 24
+
+        }
 
     }
 } 

@@ -267,6 +267,8 @@ resource createADForest 'Microsoft.Compute/virtualMachines/extensions@2023-07-01
       ModulesUrl: uri(_artifactsLocation, 'DSC/CreateADPDC.zip${_artifactsLocationSasToken}')
       ConfigurationFunction: 'CreateADPDC.ps1\\CreateADPDC'
       Properties: {
+        NomClient: nomClient
+        Path: concat('dc=',nomClient,',dc=local')
         DomainName: domainName
         AdminCreds: {
           UserName: adminUsername
