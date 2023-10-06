@@ -294,18 +294,6 @@ resource normalisation 'Microsoft.Compute/virtualMachines/extensions@2023-07-01'
     settings: {
       ModulesUrl: uri(_artifactsLocation, 'DSC/normalisation.zip${_artifactsLocationSasToken}')
       ConfigurationFunction: 'normalisation.ps1\\normalisation'
-      Properties: {
-        DomainName: domainName
-        AdminCreds: {
-          UserName: adminUsername
-          Password: 'PrivateSettingsRef:AdminPassword'
-        }
-      }
-    }
-    protectedSettings: {
-      Items: {
-        AdminPassword: adminPassword
-      }
     }
   }
 }
