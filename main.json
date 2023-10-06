@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "11304089739994692143"
+      "templateHash": "5556162542478745224"
     }
   },
   "parameters": {
@@ -358,6 +358,8 @@
           "ModulesUrl": "[uri(parameters('_artifactsLocation'), format('DSC/CreateADPDC.zip{0}', parameters('_artifactsLocationSasToken')))]",
           "ConfigurationFunction": "CreateADPDC.ps1\\CreateADPDC",
           "Properties": {
+            "NomClient": "[parameters('nomClient')]",
+            "Path": "[concat('dc=', parameters('nomClient'), ',dc=local')]",
             "DomainName": "[parameters('domainName')]",
             "AdminCreds": {
               "UserName": "[parameters('adminUsername')]",
@@ -374,16 +376,31 @@
       "dependsOn": [
         "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmAdName'))]"
       ]
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "apiVersion": "2023-07-01",
+      "name": "[format('{0}/{1}', parameters('vmAdName'), 'normalisation')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.19",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "ModulesUrl": "[uri(parameters('_artifactsLocation'), format('DSC/normalisation.zip{0}', parameters('_artifactsLocationSasToken')))]",
+          "ConfigurationFunction": "normalisation.ps1\\normalisation"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmAdName'))]"
+      ]
     }
   ],
   "outputs": {
     "hostname": {
       "type": "string",
       "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIpName')), '2023-05-01').dnsSettings.fqdn]"
-    },
-    "adminPW": {
-      "type": "string",
-      "value": "[parameters('adminPassword')]"
     }
   }
 }
