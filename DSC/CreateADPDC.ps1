@@ -132,11 +132,22 @@ configuration CreateADPDC
             DependsOn                       = '[xWaitForADDomain]WaitForDomainInstall'
         }
 
+        xADUser adminisatech
+        {
+            Path                          = "OU=$NomClient,$domainContainer"
+            DomainName                    = $DomainName
+            DomainAdministratorCredential = $domainCred
+            UserName                      = 'adminisatech'
+            Password                      = $domainCred
+            Ensure                        = "Present"
+            DependsOn                     = '[xADOrganizationalUnit]CreateAccountOU'
+
+        }
+
         xADDomainDefaultPasswordPolicy DefaultPasswordPolicy
         {
             DomainName               = $DomainName
             ComplexityEnabled        = $true
-            MinPasswordAge           = 1
             MaxPasswordAge           = 365
             MinPasswordLength        = 8
             PasswordHistoryCount     = 24
