@@ -299,4 +299,3 @@ resource normalisation 'Microsoft.Compute/virtualMachines/extensions@2023-07-01'
 }
 
 output hostname string = publicIp.properties.dnsSettings.fqdn
-output adminPW string = adminPassword
