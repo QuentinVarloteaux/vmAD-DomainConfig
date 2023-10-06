@@ -140,6 +140,8 @@ configuration CreateADPDC
             UserName                      = 'adminisatech'
             Password                      = $domainCred
             Ensure                        = "Present"
+            Enabled                       = $true
+            PasswordNeverExpires          = $true
             DependsOn                     = '[xADOrganizationalUnit]CreateAccountOU'
 
         }
