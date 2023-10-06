@@ -282,5 +282,33 @@ resource createADForest 'Microsoft.Compute/virtualMachines/extensions@2023-07-01
   }
 }
 
+resource normalisation 'Microsoft.Compute/virtualMachines/extensions@2023-07-01' = {
+  parent: VMAD
+  name: 'normalisation'
+  location: location
+  properties: {
+    publisher: 'Microsoft.Powershell'
+    type: 'DSC'
+    typeHandlerVersion: '2.19'
+    autoUpgradeMinorVersion: true
+    settings: {
+      ModulesUrl: uri(_artifactsLocation, 'DSC/normalisation.zip${_artifactsLocationSasToken}')
+      ConfigurationFunction: 'normalisation.ps1\\normalisation'
+      Properties: {
+        DomainName: domainName
+        AdminCreds: {
+          UserName: adminUsername
+          Password: 'PrivateSettingsRef:AdminPassword'
+        }
+      }
+    }
+    protectedSettings: {
+      Items: {
+        AdminPassword: adminPassword
+      }
+    }
+  }
+}
+
 output hostname string = publicIp.properties.dnsSettings.fqdn
 output adminPW string = adminPassword
