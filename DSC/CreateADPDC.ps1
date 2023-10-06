@@ -99,6 +99,8 @@ configuration CreateADPDC
             Name      = "RSAT-AD-AdminCenter"
             DependsOn = "[WindowsFeature]ADDSInstall"
         }
+
+        $domainContainer="DC=$($DomainName.Split('.') -join ',DC=')"
          
         xADDomain FirstDS 
         {
@@ -111,12 +113,23 @@ configuration CreateADPDC
             DependsOn                     = @("[xDisk]ADDataDisk", "[WindowsFeature]ADDSInstall")
         } 
 
-        xADOrganizationalUnit MainOU
+        xWaitForADDomain WaitForDomainInstall
+        {
+            DomainName           = $DomainName
+            DomainUserCredential = $DomainCreds
+            RebootRetryCount     = 2
+            RetryCount           = 10
+            RetryIntervalSec     = 60
+            DependsOn            = '[xADDomain]FirstDS'       
+        }
+
+        xADOrganizationalUnit CreateAccountOU
         {
             Name                            = $NomClient
-            Path                            = $Path
-            ProtectedFromAccidentalDeletion = $true
+            Path                            = $domainContainer
             Ensure                          = 'Present'
+            Credential                      = $DomainCreds
+            DependsOn                       = '[xWaitForADDomain]WaitForDomainInstall'
         }
 
         xADDomainDefaultPasswordPolicy DefaultPasswordPolicy

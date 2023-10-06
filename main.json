@@ -389,7 +389,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "ModulesUrl": "[uri(parameters('_artifactsLocation'), format('DSC/normalisation.zip{0}', parameters('_artifactsLocationSasToken')))]",
-          "ConfigurationFunction": "normalisation.ps1\\normalisation"
+          "ConfigurationFunction": "normalisation.ps1\\Normalisation"
         }
       },
       "dependsOn": [
