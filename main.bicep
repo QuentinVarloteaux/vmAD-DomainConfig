@@ -286,7 +286,7 @@ resource createADForest 'Microsoft.Compute/virtualMachines/extensions@2023-07-01
 
 resource normalisation 'Microsoft.Compute/virtualMachines/extensions@2023-07-01' = {
   parent: VMAD
-  name: 'normalisation'
+  name: 'Normalisation'
   location: location
   properties: {
     publisher: 'Microsoft.Powershell'

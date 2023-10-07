@@ -18,7 +18,7 @@ configuration CreateADPDC
         [Int]$RetryIntervalSec = 30
     ) 
     
-    Import-DscResource -ModuleName xActiveDirectory, xStorage, xNetworking, PSDesiredStateConfiguration, xPendingReboot
+    Import-DscResource -ModuleName xActiveDirectory, xStorage, xNetworking, PSDesiredStateConfiguration, xPendingReboot, DnsServerDsc 
     [System.Management.Automation.PSCredential ]$DomainCreds = New-Object System.Management.Automation.PSCredential ("${DomainName}\$($Admincreds.UserName)", $Admincreds.Password)
     $Interface = Get-NetAdapter | Where Name -Like "Ethernet*" | Select-Object -First 1
     $InterfaceAlias = $($Interface.Name)
@@ -140,6 +140,8 @@ configuration CreateADPDC
             UserName                      = 'adminisatech'
             Password                      = $domainCred
             Ensure                        = "Present"
+            Enabled                       = $true
+            PasswordNeverExpires          = $true
             DependsOn                     = '[xADOrganizationalUnit]CreateAccountOU'
 
         }
@@ -153,6 +155,13 @@ configuration CreateADPDC
             PasswordHistoryCount     = 24
 
         }
+
+        DnsServerPrimaryZone AddPrimaryZone
+        {
+            Name = '4.0.0.10.in-addr.arpa'
+        }
+
+
 
     }
 } 
