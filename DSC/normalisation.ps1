@@ -16,6 +16,12 @@ Configuration Normalisation
             Enabled = $false
        }
 
+       IEEnhancedSecurityConfiguration 'DisabledForAdmins'
+       {
+            Role = 'Administrators'  
+            Enabled = $false
+       }
+
        PowerPlan SetPlanHighPerformance
        {
             IsSingleInstance = 'Yes'
